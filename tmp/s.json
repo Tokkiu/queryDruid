@@ -1,0 +1,17 @@
+{
+  "queryType" : "search",
+  "dataSource" : "superdemo",
+  "granularity" : "all",
+  "searchDimensions" : [
+   "userid"
+  ], 
+  "query": {
+	"type": "insensitive_contains",
+	"value": "10"
+  },
+  "sort" : {
+	"type": "lexicographic"
+   },
+  "intervals": ["2017-01-01/2017-01-10"]
+}
+
