@@ -14,20 +14,23 @@ search.use(function(req, res, next){
 
     /* immediate handler */
     var reqJson = {
-        "queryType" : "search",
-        "dataSource" : "superdemo",
-        "granularity" : "all",
-        "searchDimensions" : [
-        "userid"
-        ], 
-        "query": {
-            "type": "insensitive_contains",
-            "value": "10"
+        "queryType": "timeseries",
+        "dataSource": "superdemo",
+        "granularity": "day",
+        "descending": "true",
+        "filter": {
+            "type": "and",
+            "fields": [
+            { "type": "or",
+                "fields": [
+                { "type": "selector", "dimension": "count", "value": "111" },
+                { "type": "selector", "dimension": "count", "value": "101" }
+                ]
+            }
+            ]
         },
-        "sort" : {
-            "type": "lexicographic"
-        },
-        "intervals": ["2017-01-01/2017-01-10"]
+        "intervals": [ "2017-01-01T00:00:00.000/2017-01-13T00:00:00.000" ]
+
     };
     req = reqJson;
 
@@ -39,7 +42,7 @@ search.get('/',function(req, res, next){
     var result;
     var options = url.parse(config.druidUrl);
     options.method = "post";
-
+    
     /* send query request , waitting for response */
     var query = http.request(options,(response) => {
         
