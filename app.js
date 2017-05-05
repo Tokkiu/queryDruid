@@ -8,6 +8,11 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var search = require('./routes/search');
+var timeSeries = require('./routes/timeSeries');
+var top = require('./routes/top');
+var sum = require('./routes/sum');
+var rose = require('./routes/rose');
+var relevancy = require('./routes/relevancy');
 
 var app = express();
 
@@ -23,9 +28,33 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// add Access-Control-Allow-Origin
+// app.all('/', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+//  });
+//  app.all('*', function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// });
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.use('/', index);
 app.use('/users', users);
-app.use('/search',search);
+app.use('/search', search);
+app.use('/timeSeries', timeSeries);
+app.use('/top', top);
+app.use('/rose', rose);
+app.use('/sum', sum);
+app.use('/relevancy', relevancy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
