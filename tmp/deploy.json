@@ -1,0 +1,67 @@
+{
+  "resources": [
+    {
+      "apiVersion": "extensions/v1beta1",
+      "kind": "Deployment",
+      "metadata": {
+        "labels": {
+          "name": "front-svc"
+        },
+        "name": "front-deploy",
+        "namespace": "gaming"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "nam": "front-select"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "name": "front-svc",
+              "nam": "front-select"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "gaming-front",
+                "image": "127.0.0.1:30100/xizheye/gamingfront:v3",
+                "imagePullPolicy": "IfNotPresent",
+                "ports": [
+                  {
+                    "containerPort": 30042,
+                    "name": "gaming-front"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "front-svc",
+        "namespace": "gaming"
+      },
+      "spec": {
+        "type": "NodePort",
+        "ports": [
+          {
+            "nodePort": 30042,
+            "port": 30042,
+            "targetPort": 30042
+          }
+        ],
+        "selector": {
+          "name": "front-svc"
+        }
+      }
+    }
+  ]
+}
