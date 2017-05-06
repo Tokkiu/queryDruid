@@ -1,6 +1,25 @@
 # queryDruid
 accomplish the http query to Druid server
 
+# API
+baseUrl : 10.19.248.14:3000
+玫瑰图
+  url : /rose/:city?limit=n
+  param : limit - 汽车品牌个数
+
+大数字
+  url : /sum/:city?
+
+车型排行
+  url : /top/:city?limit=n
+  param : limit - 汽车车型个数
+
+相关度
+  url : /relevancy/:model/:city?
+  该路径参数中，model必须有
+
+
+
 # build dataSource
  curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/car-schema.json localhost:8090/druid/indexer/v1/task
 

@@ -1,25 +1,58 @@
 var express = require('express');
 var router = express.Router();
+var http = require('http');
+var url = require('url');
+var request = require('request');
+
 
 /* GET /top listing. */
-router.get('/', function(req, res, next) {
-  var resJ = {};
-  var date = new Date();
-  resJ.queryType = "roseGraph";
-  resJ.timestamp = date.getTime();
-  resJ.data = [];
-  var brands = ["本田","日产","大众","雪福来","现代","别克","奇瑞","福特","马自达","奥迪"];
-  for (var i = 0; i < 10; i++) {
-    resJ.data.push({
-      "brand" : brands[i],
-      "salesNum" : getSalesNum(i)
-    });
-  }
-  res.send(resJ);
+router.get('/:city?', function(req, res, next) {
+  getSum(req, res);
 });
+
 
 module.exports = router;
 
-function getSalesNum(index){
-  return (Math.floor(Math.random() * 10) + index * 10);
+function getSum(req, res){
+  var limit = req.query.limit;
+  var data = {
+    "queryType": "groupBy",
+    "dataSource": "demoRaw",
+    "granularity": "all",
+    "dimensions": ["brand"],
+    "limitSpec": { "type": "default", "limit": parseInt(limit), "columns": ["brand", "count"] },
+    "orderByColumnSpec": { "dimension": "count", "direction": "ascending", "dimensionOrder": ["strlen"] },
+    "aggregations": [
+      {
+         "type":"count",
+         "name":"count"
+      }
+    ],
+    "intervals": [ "2017-05-04T00:00:00.000/2017-05-06T00:00:00.000" ]
+  };
+
+  var city = req.params.city;
+  if (city !== undefined) {
+    data.filter = {
+      "type": "and",
+      "fields": [
+        { "type": "selector", "dimension": "region", "value": city }
+      ]
+    };
+  }
+
+  request({
+    method: 'POST',
+    uri: 'http://broker1:8082/druid/v2',
+    json: true,
+    body: data
+  },
+  function (error, response, body) {
+    if (error) {
+      return console.error('upload failed:', error);
+    }
+    console.log('Upload successful!  Server responded with:', body);
+    console.log(response);
+    res.send(body);
+  })
 }

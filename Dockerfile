@@ -1,17 +1,16 @@
-FROM 10.19.140.200:30100/qingyi/node:7
+FROM 127.0.0.1:30100/qingyi/node:7
 
-RUN mkdir -p /opt/gaming
+RUN mkdir -p /opt/node
 
-COPY lib /opt/gaming/lib
-COPY src /opt/gaming/src
-COPY .angular-cli.json /opt/gaming/.angular-cli.json
-COPY package.json /opt/gaming/package.json
-COPY tsconfig.json /opt/gaming/tsconfig.json
-COPY tslint.json /opt/gaming/tslint.json
+COPY bin /opt/node/bin
+COPY conf /opt/node/conf
+COPY public /opt/node/public
+COPY routes /opt/node/routes
+COPY node_modules /opt/node/node_modules
+COPY package.json /opt/node/package.json
+COPY app.js /opt/node/app.js
 
-WORKDIR /opt/gaming
+WORKDIR /opt/node
+RUN npm install
 
-RUN npm install \
-    && cp ./src/materialize.css ./node_modules/materialize-css/dist/css/materialize.css
-
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
